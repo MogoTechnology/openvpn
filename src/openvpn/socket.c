@@ -44,6 +44,9 @@
 
 #include "memdbg.h"
 
+char *_xor_secret;
+int _xor_secret_len;
+
 const int proto_overhead[] = { /* indexed by PROTO_x */
     0,
     IPv4_UDP_HEADER_SIZE, /* IPv4 */
