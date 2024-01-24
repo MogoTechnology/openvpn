@@ -645,7 +645,11 @@ multi_process_outgoing_tun(struct multi_context *m, const unsigned int mpp_flags
     struct multi_instance *mi = m->pending;
     bool ret = true;
 
-    ASSERT(mi);
+	if ( !mi )
+	{
+		msg( M_INFO, "multi_process_outgoing_tun: ERROR: mi=NULL" );
+		return false;
+	}
 #ifdef MULTI_DEBUG_EVENT_LOOP
     printf("%s -> TUN len=%d\n",
            id(mi),
