@@ -6359,6 +6359,12 @@ add_option(struct options *options,
 				options->ce.xormask = p[2];
 				options->ce.xormasklen = strlen(options->ce.xormask);
 			}
+        else if (streq (p[1], "shift") && (!p[2]))
+			{
+				options->ce.xormethod = 5;
+				options->ce.xormask = NULL;
+				options->ce.xormasklen = 0;
+			}
 		else if (!p[2])
 			{
 				msg (M_WARN, "WARNING: No recognized 'scramble' method specified; using 'scramble xormask \"%s\"'", p[1]);

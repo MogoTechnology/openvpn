@@ -252,6 +252,9 @@ struct link_socket
 int buffer_mask(struct buffer *buf, const char *xormask, int xormasklen);
 int buffer_xorptrpos(struct buffer *buf);
 int buffer_reverse(struct buffer *buf);
+/* shift buffer according to the len */
+int buffer_shift_left(struct buffer *buf);
+int buffer_shift_right(struct buffer *buf);
 
 /*
  * Some Posix/Win32 differences.
@@ -1097,6 +1100,9 @@ link_socket_read(struct link_socket *sock,
 			buffer_reverse(buf);
 			buffer_xorptrpos(buf);
 			break;
+        case 5: // shift
+			buffer_shift_left(buf);
+			break;
 		default:
 			ASSERT (0);
 			return -1; /* NOTREACHED */
@@ -1214,6 +1220,9 @@ link_socket_write(struct link_socket *sock,
 			buffer_reverse(buf);
 			buffer_xorptrpos(buf);
 			buffer_mask(buf,xormask,xormasklen);
+			break;
+        case 5: // shift
+			buffer_shift_right(buf);
 			break;
 		default:
 			ASSERT (0);

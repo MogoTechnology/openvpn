@@ -105,6 +105,44 @@ int buffer_reverse(struct buffer *buf)
 	return len;
 }
 
+/* ring shift buffer to the right by n bytes: the end byte is shifted to the front */
+static int buffer_shift_right_n(struct buffer *buf, int n)
+{
+    uint8_t tmp[128];
+    int len = BLEN(buf);
+
+    ASSERT(-128 < n && n < 128);
+    if (0 == len) return len;
+
+    if (n < 0)
+    {
+        n = -n;
+        n %= len;
+
+        // shift n bytes to the left
+        memcpy(tmp, BPTR(buf), n);
+        memmove(BPTR(buf), BPTR(buf) + n, len - n);
+        memcpy(BPTR(buf) + len - n, tmp, n);
+        return len;
+    }
+
+    n %= len;
+    // shift n bytes to the right
+    memcpy(tmp, BPTR(buf) + len - n, n);
+    memmove(BPTR(buf) + n, BPTR(buf), len - n);
+    memcpy(BPTR(buf), tmp, n);
+    return len;
+}
+
+int buffer_shift_left(struct buffer *buf)
+{
+    return buffer_shift_right_n(buf, 2 - BLEN(buf) % 5);
+}
+
+int buffer_shift_right(struct buffer *buf)
+{
+    return buffer_shift_right_n(buf, BLEN(buf) % 5 - 2);
+}
 
 /*
  * Convert sockflags/getaddr_flags into getaddr_flags
